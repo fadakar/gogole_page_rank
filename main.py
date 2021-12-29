@@ -52,7 +52,9 @@ class GoogleRank:
         self.__sheet = self.wb.sheet_by_index(0)
         w = self.__sheet.col_values(0, 0)
         t = self.__sheet.col_values(1, 0)
-        self.data = {'keywords': w, 'targets': t}
+        pages = self.__sheet.col_values(2, 0)
+        counters = self.__sheet.col_values(3, 0)
+        self.data = {'keywords': w, 'targets': t, 'pages': pages, 'counters': counters}
 
     def load_license(self):
         ROOT_DIR = get_root_dir()
@@ -86,6 +88,8 @@ class GoogleRank:
 
     def find_in_result(self, keyword, target, counter=0):
         container = self.driver.find_element(By.ID, 'rso')
+        if not container:
+            raise 'Captcha Coming...'
         links = container.find_elements(By.CSS_SELECTOR, '.g > div:not(.g)')
         found = False
         for link in links:
@@ -124,17 +128,21 @@ class GoogleRank:
             self.load_excel()
             keywords = self.data['keywords']
             targets = self.data['targets']
-            i = 0
+            i = -1
             for keyword in keywords:
+                i += 1
+                if self.data['counters'][i] != '':
+                    self.result.append(Row(keyword, targets[i], self.data['pages'][i], self.data['counters'][i]))
+                    continue
                 self.current_page = 1
                 self.search_in_google(keyword)
                 self.find_in_result(keyword, targets[i])
-                i += 1
-            self.write_result()
+
         except Exception as ex:
             print(ex)
             pass
         finally:
+            self.write_result()
             self.driver.quit()
             # print('[Error][500]: please contact Administrator')
 
