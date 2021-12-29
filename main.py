@@ -40,14 +40,16 @@ class GoogleRank:
     __wb = None
     __license = ''
     __license_file_name = 'key.license'
+    __excel_filename = ''
 
-    def __init__(self):
+    def __init__(self, excel_filename):
         self.load_license()
         self.check_license()
+        self.__excel_filename = excel_filename
 
     def load_excel(self):
         ROOT_DIR = get_root_dir()
-        excel_path = os.path.join(ROOT_DIR, 'keywords.xls')
+        excel_path = os.path.join(ROOT_DIR, self.__excel_filename)
         self.wb = xlrd.open_workbook(excel_path)
         self.__sheet = self.wb.sheet_by_index(0)
         w = self.__sheet.col_values(0, 0)
@@ -125,7 +127,7 @@ class GoogleRank:
             sheet.write(i, 2, row.page)
             sheet.write(i, 3, row.value)
             i += 1
-        wb.save('keywords.xls')
+        wb.save(self.__excel_filename)
 
     def run(self):
         try:
@@ -153,7 +155,10 @@ class GoogleRank:
 
 if __name__ == '__main__':
     # try:
-    ranking = GoogleRank()
+    if len(sys.argv) != 2:
+        print("Enter main.exe excel.xls command")
+    excel_filename = sys.argv[1].strip(r'.\\')
+    ranking = GoogleRank(excel_filename)
     f = Figlet()
     print(colored(f.renderText('Page Rank'), 'red'))
     print(colored('\tCreated By Gholamreza Fadakar', 'red'))
