@@ -42,10 +42,12 @@ class GoogleRank:
     __license_file_name = 'key.license'
     __excel_filename = ''
 
-    def __init__(self, excel_filename):
+    def __init__(self, excel_filename, max_page=3, delay=3):
         self.load_license()
         self.check_license()
         self.__excel_filename = excel_filename
+        self.__delay = delay
+        self.max_page_search = max_page
 
     def load_excel(self):
         ROOT_DIR = get_root_dir()
@@ -155,17 +157,24 @@ class GoogleRank:
 
 if __name__ == '__main__':
     # try:
-    if len(sys.argv) != 2:
-        print("Enter main.exe excel.xls command")
-    excel_filename = sys.argv[1].strip(r'.\\')
-    ranking = GoogleRank(excel_filename)
-    f = Figlet()
-    print(colored(f.renderText('Page Rank'), 'red'))
-    print(colored('\tCreated By Gholamreza Fadakar', 'red'))
-    print()
-    print()
-    print()
-    ranking.run()
+    if len(sys.argv) < 2:
+        print("Enter command: main.exe [excel.xls] [max page] [delay|sec] ")
+    else:
+        delay = 3
+        max_page = 3
+        if len(sys.argv) >= 3:
+            max_page = int(sys.argv[2])
+        if len(sys.argv) == 4:
+            delay = int(sys.argv[3])
+        excel_filename = sys.argv[1].strip(r'.\\')
+        ranking = GoogleRank(excel_filename, max_page, delay)
+        f = Figlet()
+        print(colored(f.renderText('Page Rank'), 'red'))
+        print(colored('\tCreated By Gholamreza Fadakar', 'red'))
+        print()
+        print()
+        print()
+        ranking.run()
     # except Exception as ex:
     #     print(ex)
     #     pass
