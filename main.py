@@ -52,9 +52,14 @@ class GoogleRank:
         self.__sheet = self.wb.sheet_by_index(0)
         w = self.__sheet.col_values(0, 0)
         t = self.__sheet.col_values(1, 0)
-        pages = self.__sheet.col_values(2, 0)
-        counters = self.__sheet.col_values(3, 0)
-        self.data = {'keywords': w, 'targets': t, 'pages': pages, 'counters': counters}
+        try:
+            pages = self.__sheet.col_values(2, 0)
+            counters = self.__sheet.col_values(3, 0)
+        except:
+            pages = []
+            counters = []
+        finally:
+            self.data = {'keywords': w, 'targets': t, 'pages': pages, 'counters': counters}
 
     def load_license(self):
         ROOT_DIR = get_root_dir()
@@ -131,13 +136,12 @@ class GoogleRank:
             i = -1
             for keyword in keywords:
                 i += 1
-                if self.data['counters'][i] != '':
+                if len(self.data['counters']) > i and self.data['counters'][i] != '':
                     self.result.append(Row(keyword, targets[i], self.data['pages'][i], self.data['counters'][i]))
                     continue
                 self.current_page = 1
                 self.search_in_google(keyword)
                 self.find_in_result(keyword, targets[i])
-
         except Exception as ex:
             print(ex)
             pass
@@ -148,15 +152,15 @@ class GoogleRank:
 
 
 if __name__ == '__main__':
-    try:
-        ranking = GoogleRank()
-        f = Figlet()
-        print(colored(f.renderText('Page Rank'), 'red'))
-        print(colored('\tCreated By Gholamreza Fadakar', 'red'))
-        print()
-        print()
-        print()
-        ranking.run()
-    except Exception as ex:
-        print(ex)
-        pass
+    # try:
+    ranking = GoogleRank()
+    f = Figlet()
+    print(colored(f.renderText('Page Rank'), 'red'))
+    print(colored('\tCreated By Gholamreza Fadakar', 'red'))
+    print()
+    print()
+    print()
+    ranking.run()
+    # except Exception as ex:
+    #     print(ex)
+    #     pass
