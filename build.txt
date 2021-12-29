@@ -1,2 +1,0 @@
-pyinstaller --add-data "venv\Lib\site-packages\pyfiglet;./pyfiglet" --onefile .\main.py
-pyinstaller --add-data "venv\Lib\site-packages\pyfiglet;./pyfiglet" --onefile .\key_generator.py
