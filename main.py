@@ -30,7 +30,7 @@ class Row:
 
 
 class GoogleRank:
-    __delay = 5
+    __delay = 3
     driver = None
     data = None
     current_page = 1
@@ -96,13 +96,13 @@ class GoogleRank:
         if found:
             row = Row(keyword, target, self.current_page, counter)
             self.result.append(row)
-            print("[" + keyword + "][" + target + "] = " + str(counter))
+            print("[" + keyword + "][" + target + "] = " + "[ " + str(self.current_page) + " ][ " + str(counter) + " ]")
         else:
             if self.current_page < self.max_page_search:
                 self.go_to_next_page()
                 self.find_in_result(keyword, target, counter)
             else:
-                row = Row(keyword, target, 'Not Found')
+                row = Row(keyword, target, '', 'Not Found')
                 self.result.append(row)
                 print("[" + keyword + "][" + target + "] = Not Found")
 
@@ -132,7 +132,7 @@ class GoogleRank:
                 i += 1
             self.write_result()
         except Exception as ex:
-            # print(ex)
+            print(ex)
             pass
         finally:
             self.driver.quit()
@@ -145,7 +145,10 @@ if __name__ == '__main__':
         f = Figlet()
         print(colored(f.renderText('Page Rank'), 'red'))
         print(colored('\tCreated By Gholamreza Fadakar', 'red'))
+        print()
+        print()
+        print()
         ranking.run()
     except Exception as ex:
-        # print(ex)
+        print(ex)
         pass
